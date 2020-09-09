@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>swiper</title>
+  <style>
+    .container{
+      position: relative;
+      overflow: hidden;
+      height: 300px;
+      overflow: hidden;
+    }
+    .item{
+      width: 100%;
+      font-size: 36px;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .item:nth-child(2n+1){
+      background-color: gray;
+    }
+    .item:nth-child(2n){
+      background-color: pink;
+    }
+    .slide-enter-active{
+      position: absolute;
+      animation: slideIn ease .5s forwards;
+    }
+    .slide-leave-active{
+      position: absolute;
+      animation: slideOut ease .5s forwards;
+    }
+    @keyframes slideIn {
+      0%{
+        transform: translateX(100%);
+      }
+      100%{
+        transform: translateX(0);
+      }
+    }
+    @keyframes slideOut {
+      0%{
+        transform: translateX(0);
+      }
+      100%{
+        transform: translateX(-100%);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="item" style="display:flex" >1</div>
+    <div class="item" style="display:none" >2</div>
+    <div class="item" style="display:none" >3</div>
+    <div class="item" style="display:none" >4</div>
+  </div>
+</body>
+<script>
+  const DURATION = 3000
+  let list = document.querySelectorAll('.item')
+  let curIndex = 0
+  autoPlay()
+  function autoPlay(){
+    setTimeout(()=>{
+      toggleShow(list[(curIndex+1)%list.length], list[curIndex])
+      curIndex = (curIndex+1)%list.length
+      this.autoPlay()
+    },DURATION)
+  }
+  function toggleShow(newE,oldE){
+    //旧ele和新ele同时动画
+    hide(oldE)
+    show(newE)
+  }
+  //离场
+  function hide(el){
+    el.className = el.className.replace(' slide-enter-active','')  // 注意这里前面有个空格
+    el.className += ' slide-leave-active'
+    el.addEventListener('animationend',animationEvent)
+  }
+  function animationEvent(e){
+    e.target.className = e.target.className.replace(' slide-leave-active','')
+    e.target.style.display = 'none'
+    e.target.removeEventListener('animationend',animationEvent)
+  }
+  //进场
+  function show(el){
+    el.style.display = 'flex'
+    el.className += ' slide-enter-active'
+  }
+</script>
+</html>
